@@ -1,63 +1,41 @@
-#!/bin/bash
+name: YouTube Video to Restream 24/7 Loop
 
-# ═══════════════════════════════════════════════════
-#  YouTube Video to Restream 24/7 (Loop)
-# ═══════════════════════════════════════════════════
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 */6 * * *'
 
-YOUTUBE_URL="https://youtu.be/P0uaLRO6V1U"
-VIDEO_FILE="/tmp/looped_video.mp4"
-COOKIE_FILE="/tmp/cookies.txt"
+permissions:
+  actions: write
+  contents: read
 
-# 1. إنشاء ملف الكوكيز
-if [ -n "$RAW_COOKIES" ]; then
-    echo "🍪 تجهيز ملف الكوكيز..."
-    python3 -c "
-import os
-raw = os.environ.get('RAW_COOKIES', '')
-with open('/tmp/cookies.txt', 'w') as f:
-    f.write('# Netscape HTTP Cookie File\n')
-    for pair in raw.split(';'):
-        pair = pair.strip()
-        if not pair or '=' not in pair: continue
-        name, value = pair.split('=', 1)
-        f.write(f'.youtube.com\tTRUE\t/\tTRUE\t0\t{name}\t{value}\n')
-"
-fi
+jobs:
+  relay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
 
-# 2. تحميل الفيديو (إذا لم يكن موجوداً)
-if [ ! -f "$VIDEO_FILE" ]; then
-    echo "⬇️  جاري تحميل الفيديو لأول مرة..."
-    # استخدام yt-dlp مع الكوكيز وأفضل جودة MP4
-    yt-dlp --cookies "$COOKIE_FILE" \
-           -f "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best" \
-           --merge-output-format mp4 \
-           -o "$VIDEO_FILE" \
-           "$YOUTUBE_URL"
-    
-    if [ ! -f "$VIDEO_FILE" ]; then
-        echo "❌ فشل تحميل الفيديو. تأكد من صحة الكوكيز أو الرابط."
-        exit 1
-    fi
-    echo "✅ تم تحميل الفيديو بنجاح."
-fi
+    env:
+      RESTREAM_KEY: "re_12552561_event81737fba9ada4713ab13ad7e04a36880"
+      RAW_COOKIES: "__Secure-YNID=CtoBCAUSjAEB8QZuZjWcTXG9JU0sYr8QklViTrtUnYqFMLV9yU629lRWJDINQyeozV6-VyvAarKMG0ED8Wt0SDrH8If6uqeRWHS00Fi9VtKnh9E7aHUUSCeYHN3J2fJ1Qn7R-EdOMLb1gSPhQGid3sKH4CG84qyVXYdi6VqNxYcnNlKsbsw7FffqqIaZK4gudMLvvSgFMkUB3qmdT8tAKNapXLK-V47vnqSb2QTP0M5m9yE9iYxvPPqAocRA-G4D_vQtYaBJ496Hv7zVWGpVbvTSknV2qZOL_SU9Tgo; GPS=1; YSC=lmfdjAh_2bQ; VISITOR_INFO1_LIVE=KOhY259gc18; VISITOR_PRIVACY_METADATA=CgJJURIEGgAgPA%3D%3D; PREF=f6=40000000&tz=Asia.Baghdad; __Secure-1PSIDTS=sidts-CjUBkldj_x9GX33Z7u8RT2KjbHkPh50m3ggyGssI1mk6HLKntqTgW-YbuOoiUBd9kiGX4LxaOxAA; __Secure-3PSIDTS=sidts-CjUBkldj_x9GX33Z7u8RT2KjbHkPh50m3ggyGssI1mk6HLKntqTgW-YbuOoiUBd9kiGX4LxaOxAA; HSID=AdV8f3a6EAup9EfGp; SSID=AV2omS8jEiLInIRc_; APISID=cu6IlZQ6VxPidlQN/AGMaGwzVRrnype0Pd; SAPISID=OGKvzqgF20NZZRZj/AR739Ij0F45yUqvFP; __Secure-1PAPISID=OGKvzqgF20NZZRZj/AR739Ij0F45yUqvFP; __Secure-3PAPISID=OGKvzqgF20NZZRZj/AR739Ij0F45yUqvFP; SID=g.a000EAntDetJD0McOuQCxohUWZpSKlR9RldynZMTCNL3kLH7LOxCiQcWx_zsZVtwHcmo5xBgNwACgYKAVESARUSFQHGX2MiifxOqWPtF-mPZgDIM4MEwBoVAUF8yKoNETlOy1gA616K4N1mZhqQ0076; __Secure-1PSID=g.a000EAntDetJD0McOuQCxohUWZpSKlR9RldynZMTCNL3kLH7LOxCKfiU3n0XfnJzQZARNb3sNQACgYKAS8SARUSFQHGX2Mi8aPqZ4tRvp7TyrqhtujUEhoVAUF8yKpCLcdEP5OU4D5kyZBE5efV0076; __Secure-3PSID=g.a000EAntDetJD0McOuQCxohUWZpSKlR9RldynZMTCNL3kLH7LOxCr8xKlEzgYKM3bZ_IMUM5MgACgYKAWwSARUSFQHGX2Mibt76Vo6ejXS-X-ljZh0OaBoVAUF8yKqai9C_czYDfocsLjEHvB-20076; LOGIN_INFO=AFmmF2swRAIgFeuN9qwW5ooyO-6322_dqnpQ8P6c9V707sEJNYL9CsQCIEno-xX1YTrmsCcf4wbADq-GfpCoVTdQ1T6w_CfMbKrW:QUQ3MjNmeXNrMThZREgwVC1Pb0VpM1BDdHI3LVNhQ0FmalNfajR2b19kSEg1MEo2aHJvVnN6WUVxZFlFeGVRdlN0NjVxLVZCQjdfZ0xFalh2eDN6bjl6N013Q21mOTNBS3pUUXJrcXJOWkVJT0F5a0x5cWwxZGFqUnpMNnlsZWx3Z0F5S1VkSkxMSDhnRFc1Y1M1M09HOGxOTWs5MmkxelNn; __Secure-ROLLOUT_TOKEN=CNTZ-7rI-IXK4gEQ7pKMnI_RlwMY5Y74rI_RlwM%3D; SIDCC=APD_SKH4LSAsKHHY_fRpcNPbD_InnWDxUQux9Xj5LGBLbp6LK3bHH-Qqb9LYjCXpfq0No8SW; __Secure-1PSIDCC=APD_SKH5UQjWA57-0hkrqayKCA3LA3VYRXk86CUustYueN0FPQO3903DeJ_OvzBThYhWIcLh9Q; __Secure-3PSIDCC=APD_SKGmDbup0y3RSrK_mJXcStmYTuWqU5HNLhlsvydZSjFy9drmlnaDKfQTc7tpPcBGee-Yzw"
 
-# 3. حلقة البث اللانهائية
-while true; do
-    echo "🔁 [$(date -u +%H:%M:%S)] بدء بث الفيديو..."
-    
-    # استخدام ffmpeg لقراءة الملف وبثه بشكل متكرر (-stream_loop -1)
-    ffmpeg -hide_banner -loglevel warning -nostdin \
-        -stream_loop -1 \
-        -re \
-        -i "$VIDEO_FILE" \
-        -c:v libx264 -preset ultrafast -tune zerolatency \
-        -pix_fmt yuv420p -g 120 -r 60 \
-        -b:v 6500k -maxrate 7000k -bufsize 14000k \
-        -c:a aac -b:a 160k -ar 44100 -ac 2 \
-        -max_muxing_queue_size 4096 \
-        -flvflags no_duration_filesize \
-        -f flv "rtmp://live.restream.io/live/$RESTREAM_KEY"
+    steps:
+      - name: جلب الملفات
+        uses: actions/checkout@v3
 
-    echo "⚠️ انقطع البث. إعادة المحاولة خلال 5 ثوانٍ..."
-    sleep 5
-done 
+      - name: تثبيت الأدوات (ffmpeg, yt-dlp)
+        run: |
+          set -e
+          echo "═══ التثبيت ═══"
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends ffmpeg
+          
+          sudo curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp
+          sudo chmod a+rx /usr/local/bin/yt-dlp
+          
+          echo "✅ ffmpeg: $(ffmpeg -version | head -n 1)"
+          echo "✅ yt-dlp: $(yt-dlp --version)"
+
+      - name: تشغيل البث
+        run: |
+          chmod +x stream.sh
+          ./stream.sh

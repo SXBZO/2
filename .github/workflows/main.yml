@@ -1,9 +1,9 @@
-name: YouTube to Restream 24-7 Relay (No-Cookie)
+name: YouTube to Restream 24-7 Relay
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 */6 * * *' # احتياطي كل 6 ساعات
+    - cron: '0 */6 * * *'
 
 permissions:
   actions: write
@@ -14,29 +14,22 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 355
 
-    # ═══════════════════════════════════════════════════
-    # الإعدادات
-    # ═══════════════════════════════════════════════════
     env:
       RESTREAM_KEY: "re_12552561_event81737fba9ada4713ab13ad7e04a36880"
       YOUTUBE_URL: "https://www.youtube.com/live/eC4LfEVxvKg"
-    # ═══════════════════════════════════════════════════
 
     steps:
       - name: تثبيت ffmpeg و yt-dlp و streamlink
         run: |
           set -e
           echo "═══ التثبيت ═══"
-          # إزالة مستودعات Microsoft لتجنب تعارض الحزم
           sudo rm -f /etc/apt/sources.list.d/azure-cli.list /etc/apt/sources.list.d/microsoft-prod.list
           sudo apt-get update -qq
           sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ffmpeg
           
-          # تثبيت yt-dlp (أحدث إصدار)
           sudo curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp
           sudo chmod a+rx /usr/local/bin/yt-dlp
           
-          # تثبيت streamlink كأداة احتياطية
           pip3 install --user --break-system-packages --quiet --upgrade streamlink
           echo "$HOME/.local/bin" >> $GITHUB_PATH
           
@@ -48,28 +41,41 @@ jobs:
           set -e
           echo "🚀 بدء تشغيل الجسر: $YOUTUBE_URL -> Restream"
 
-          # حلقة لا نهائية لضمان استمرار البث
           while true; do
             echo "─── [$(date -u +%H:%M:%S)] محاولة الاتصال بالمصدر... ───"
             
             STREAM_URL=""
 
-            # المحاولة الأولى: yt-dlp مع التظاهر بأنه جهاز iOS أو Android أو تلفاز
-            echo "🔄 محاولة 1: yt-dlp (Mobile/TV Client)..."
+            # المحاولة 1: yt-dlp مع خيارات متقدمة (بدون كوكيز)
+            echo "🔄 محاولة 1: yt-dlp (Android/iOS/Web Embedded)..."
             STREAM_URL=$(yt-dlp -g -f best \
-              --extractor-args "youtube:player_client=ios,android,web_embedded" \
               --no-warnings \
+              --no-check-certificate \
+              --user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" \
+              --extractor-args "youtube:player_client=android,ios,web_embedded" \
+              --live-from-start \
               "$YOUTUBE_URL" 2>/dev/null | head -n 1 || true)
 
-            # المحاولة الثانية: streamlink (إذا فشلت الأولى)
+            # المحاولة 2: yt-dlp مع player_client افتراضي
             if [ -z "$STREAM_URL" ]; then
-              echo "🔄 محاولة 2: streamlink..."
+              echo "🔄 محاولة 2: yt-dlp (Default Client)..."
+              STREAM_URL=$(yt-dlp -g -f best \
+                --no-warnings \
+                --no-check-certificate \
+                --user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" \
+                "$YOUTUBE_URL" 2>/dev/null | head -n 1 || true)
+            fi
+
+            # المحاولة 3: streamlink
+            if [ -z "$STREAM_URL" ]; then
+              echo "🔄 محاولة 3: streamlink..."
               STREAM_URL=$(streamlink --stream-url "$YOUTUBE_URL" best 2>/dev/null || true)
             fi
 
-            # التحقق من النتيجة
+            # التحقق النهائي: إذا لم نجد رابطاً، لا نشغل ffmpeg
             if [ -z "$STREAM_URL" ]; then
-              echo "⚠️ لم يتم العثور على رابط بث. البث قد يكون متوقفاً حالياً، أو يوتيوب يحظر السيرفر."
+              echo "⚠️ لم يتم العثور على رابط بث. البث قد يكون متوقفاً حالياً، أو يوتيوب يحظر سيرفر GitHub."
+              echo "💡 الحل الوحيد المضمون 100% هو استخدام الكوكيز (Cookies)."
               echo "⏳ إعادة المحاولة بعد 10 ثوانٍ..."
               sleep 10
               continue
@@ -77,7 +83,7 @@ jobs:
 
             echo "✅ تم استخراج الرابط بنجاح، جاري التمرير إلى Restream..."
 
-            # تمرير البث باستخدام ffmpeg
+            # تشغيل ffmpeg مع الرابط المؤكد
             ffmpeg -hide_banner -loglevel warning -nostdin \
               -reconnect 1 -reconnect_at_eof 1 -reconnect_streamed 1 -reconnect_delay_max 5 \
               -rw_timeout 10000000 \

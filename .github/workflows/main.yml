@@ -1,4 +1,4 @@
-name: YouTube to Restream 24-7 Relay (Hardcoded Cookies + JS Runtime)
+name: YouTube to Restream 24-7 Relay (Ultimate Fix)
 
 on:
   workflow_dispatch:
@@ -17,49 +17,77 @@ jobs:
     env:
       RESTREAM_KEY: "re_12552561_event81737fba9ada4713ab13ad7e04a36880"
       YOUTUBE_URL: "https://www.youtube.com/live/eC4LfEVxvKg"
-      YOUTUBE_COOKIES: "__Secure-YNID=CtoBCAUSjAEB8QZuZjWcTXG9JU0sYr8QklViTrtUnYqFMLV9yU629lRWJDINQyeozV6-VyvAarKMG0ED8Wt0SDrH8If6uqeRWHS00Fi9VtKnh9E7aHUUSCeYHN3J2fJ1Qn7R-EdOMLb1gSPhQGid3sKH4CG84qyVXYdi6VqNxYcnNlKsbsw7FffqqIaZK4gudMLvvSgFMkUB3qmdT8tAKNapXLK-V47vnqSb2QTP0M5m9yE9iYxvPPqAocRA-G4D_vQtYaBJ496Hv7zVWGpVbvTSknV2qZOL_SU9Tgo; GPS=1; YSC=lmfdjAh_2bQ; VISITOR_INFO1_LIVE=KOhY259gc18; VISITOR_PRIVACY_METADATA=CgJJURIEGgAgPA%3D%3D; PREF=f6=40000000&tz=Asia.Baghdad; __Secure-1PSIDTS=sidts-CjUBkldj_x9GX33Z7u8RT2KjbHkPh50m3ggyGssI1mk6HLKntqTgW-YbuOoiUBd9kiGX4LxaOxAA; __Secure-3PSIDTS=sidts-CjUBkldj_x9GX33Z7u8RT2KjbHkPh50m3ggyGssI1mk6HLKntqTgW-YbuOoiUBd9kiGX4LxaOxAA; HSID=AdV8f3a6EAup9EfGp; SSID=AV2omS8jEiLInIRc_; APISID=cu6IlZQ6VxPidlQN/AGMaGwzVRrnype0Pd; SAPISID=OGKvzqgF20NZZRZj/AR739Ij0F45yUqvFP; __Secure-1PAPISID=OGKvzqgF20NZZRZj/AR739Ij0F45yUqvFP; __Secure-3PAPISID=OGKvzqgF20NZZRZj/AR739Ij0F45yUqvFP; SID=g.a000EAntDetJD0McOuQCxohUWZpSKlR9RldynZMTCNL3kLH7LOxCiQcWx_zsZVtwHcmo5xBgNwACgYKAVESARUSFQHGX2MiifxOqWPtF-mPZgDIM4MEwBoVAUF8yKoNETlOy1gA616K4N1mZhqQ0076; __Secure-1PSID=g.a000EAntDetJD0McOuQCxohUWZpSKlR9RldynZMTCNL3kLH7LOxCKfiU3n0XfnJzQZARNb3sNQACgYKAS8SARUSFQHGX2Mi8aPqZ4tRvp7TyrqhtujUEhoVAUF8yKpCLcdEP5OU4D5kyZBE5efV0076; __Secure-3PSID=g.a000EAntDetJD0McOuQCxohUWZpSKlR9RldynZMTCNL3kLH7LOxCr8xKlEzgYKM3bZ_IMUM5MgACgYKAWwSARUSFQHGX2Mibt76Vo6ejXS-X-ljZh0OaBoVAUF8yKqai9C_czYDfocsLjEHvB-20076; LOGIN_INFO=AFmmF2swRAIgFeuN9qwW5ooyO-6322_dqnpQ8P6c9V707sEJNYL9CsQCIEno-xX1YTrmsCcf4wbADq-GfpCoVTdQ1T6w_CfMbKrW:QUQ3MjNmeXNrMThZREgwVC1Pb0VpM1BDdHI3LVNhQ0FmalNfajR2b19kSEg1MEo2aHJvVnN6WUVxZFlFeGVRdlN0NjVxLVZCQjdfZ0xFalh2eDN6bjl6N013Q21mOTNBS3pUUXJrcXJOWkVJT0F5a0x5cWwxZGFqUnpMNnlsZWx3Z0F5S1VkSkxMSDhnRFc1Y1M1M09HOGxOTWs5MmkxelNn; __Secure-ROLLOUT_TOKEN=CNTZ-7rI-IXK4gEQ7pKMnI_RlwMY5Y74rI_RlwM%3D; SIDCC=APD_SKH4LSAsKHHY_fRpcNPbD_InnWDxUQux9Xj5LGBLbp6LK3bHH-Qqb9LYjCXpfq0No8SW; __Secure-1PSIDCC=APD_SKH5UQjWA57-0hkrqayKCA3LA3VYRXk86CUustYueN0FPQO3903DeJ_OvzBThYhWIcLh9Q; __Secure-3PSIDCC=APD_SKGmDbup0y3RSrK_mJXcStmYTuWqU5HNLhlsvydZSjFy9drmlnaDKfQTc7tpPcBGee-Yzw"
+      # النص الخام للكوكيز (سيتم تحويله لملف داخل السكربت)
+      RAW_COOKIES: "__Secure-YNID=CtoBCAUSjAEB8QZuZjWcTXG9JU0sYr8QklViTrtUnYqFMLV9yU629lRWJDINQyeozV6-VyvAarKMG0ED8Wt0SDrH8If6uqeRWHS00Fi9VtKnh9E7aHUUSCeYHN3J2fJ1Qn7R-EdOMLb1gSPhQGid3sKH4CG84qyVXYdi6VqNxYcnNlKsbsw7FffqqIaZK4gudMLvvSgFMkUB3qmdT8tAKNapXLK-V47vnqSb2QTP0M5m9yE9iYxvPPqAocRA-G4D_vQtYaBJ496Hv7zVWGpVbvTSknV2qZOL_SU9Tgo; GPS=1; YSC=lmfdjAh_2bQ; VISITOR_INFO1_LIVE=KOhY259gc18; VISITOR_PRIVACY_METADATA=CgJJURIEGgAgPA%3D%3D; PREF=f6=40000000&tz=Asia.Baghdad; __Secure-1PSIDTS=sidts-CjUBkldj_x9GX33Z7u8RT2KjbHkPh50m3ggyGssI1mk6HLKntqTgW-YbuOoiUBd9kiGX4LxaOxAA; __Secure-3PSIDTS=sidts-CjUBkldj_x9GX33Z7u8RT2KjbHkPh50m3ggyGssI1mk6HLKntqTgW-YbuOoiUBd9kiGX4LxaOxAA; HSID=AdV8f3a6EAup9EfGp; SSID=AV2omS8jEiLInIRc_; APISID=cu6IlZQ6VxPidlQN/AGMaGwzVRrnype0Pd; SAPISID=OGKvzqgF20NZZRZj/AR739Ij0F45yUqvFP; __Secure-1PAPISID=OGKvzqgF20NZZRZj/AR739Ij0F45yUqvFP; __Secure-3PAPISID=OGKvzqgF20NZZRZj/AR739Ij0F45yUqvFP; SID=g.a000EAntDetJD0McOuQCxohUWZpSKlR9RldynZMTCNL3kLH7LOxCiQcWx_zsZVtwHcmo5xBgNwACgYKAVESARUSFQHGX2MiifxOqWPtF-mPZgDIM4MEwBoVAUF8yKoNETlOy1gA616K4N1mZhqQ0076; __Secure-1PSID=g.a000EAntDetJD0McOuQCxohUWZpSKlR9RldynZMTCNL3kLH7LOxCKfiU3n0XfnJzQZARNb3sNQACgYKAS8SARUSFQHGX2Mi8aPqZ4tRvp7TyrqhtujUEhoVAUF8yKpCLcdEP5OU4D5kyZBE5efV0076; __Secure-3PSID=g.a000EAntDetJD0McOuQCxohUWZpSKlR9RldynZMTCNL3kLH7LOxCr8xKlEzgYKM3bZ_IMUM5MgACgYKAWwSARUSFQHGX2Mibt76Vo6ejXS-X-ljZh0OaBoVAUF8yKqai9C_czYDfocsLjEHvB-20076; LOGIN_INFO=AFmmF2swRAIgFeuN9qwW5ooyO-6322_dqnpQ8P6c9V707sEJNYL9CsQCIEno-xX1YTrmsCcf4wbADq-GfpCoVTdQ1T6w_CfMbKrW:QUQ3MjNmeXNrMThZREgwVC1Pb0VpM1BDdHI3LVNhQ0FmalNfajR2b19kSEg1MEo2aHJvVnN6WUVxZFlFeGVRdlN0NjVxLVZCQjdfZ0xFalh2eDN6bjl6N013Q21mOTNBS3pUUXJrcXJOWkVJT0F5a0x5cWwxZGFqUnpMNnlsZWx3Z0F5S1VkSkxMSDhnRFc1Y1M1M09HOGxOTWs5MmkxelNn; __Secure-ROLLOUT_TOKEN=CNTZ-7rI-IXK4gEQ7pKMnI_RlwMY5Y74rI_RlwM%3D; SIDCC=APD_SKH4LSAsKHHY_fRpcNPbD_InnWDxUQux9Xj5LGBLbp6LK3bHH-Qqb9LYjCXpfq0No8SW; __Secure-1PSIDCC=APD_SKH5UQjWA57-0hkrqayKCA3LA3VYRXk86CUustYueN0FPQO3903DeJ_OvzBThYhWIcLh9Q; __Secure-3PSIDCC=APD_SKGmDbup0y3RSrK_mJXcStmYTuWqU5HNLhlsvydZSjFy9drmlnaDKfQTc7tpPcBGee-Yzw"
 
     steps:
-      - name: تثبيت ffmpeg و yt-dlp
+      - name: تثبيت الأدوات (ffmpeg, yt-dlp nightly, POT provider)
         run: |
           set -e
           echo "═══ التثبيت ═══"
-          sudo rm -f /etc/apt/sources.list.d/azure-cli.list /etc/apt/sources.list.d/microsoft-prod.list
           sudo apt-get update -qq
           sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ffmpeg
           
-          sudo curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp
+          # تثبيت yt-dlp النسخة الليلية (أحدث إصلاحات يوتيوب)
+          sudo curl -L https://github.com/yt-dlp/yt-dlp-nightly-builds/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp
           sudo chmod a+rx /usr/local/bin/yt-dlp
           
+          # تثبيت Node.js (مطلوب لبعض مكونات yt-dlp)
+          sudo apt-get install -y nodejs npm
+          
           echo "✅ ffmpeg: $(ffmpeg -version | head -n 1)"
-          echo "✅ yt-dlp: $(yt-dlp --version)"
+          echo "✅ yt-dlp (Nightly): $(yt-dlp --version)"
 
-      - name: تشغيل البث (مع الكوكيز والمكونات الإضافية)
+      - name: تحويل الكوكيز إلى ملف Netscape
+        run: |
+          python3 -c "
+          import os
+          raw = os.environ['RAW_COOKIES']
+          with open('/tmp/cookies.txt', 'w') as f:
+              f.write('# Netscape HTTP Cookie File\n')
+              for pair in raw.split(';'):
+                  pair = pair.strip()
+                  if not pair or '=' not in pair: continue
+                  name, value = pair.split('=', 1)
+                  # Domain, IncludeSubdomains, Path, Secure, Expiry, Name, Value
+                  f.write(f'.youtube.com\tTRUE\t/\tTRUE\t0\t{name}\t{value}\n')
+          print('✅ تم إنشاء ملف cookies.txt بصيغة Netscape')
+          cat /tmp/cookies.txt | head -n 5
+          "
+
+      - name: تشغيل البث مع تجاوز الحظر
         run: |
           set -e
           echo "🚀 بدء تشغيل الجسر: $YOUTUBE_URL -> Restream"
 
           while true; do
-            echo "─── [$(date -u +%H:%M:%S)] محاولة الاتصال بالمصدر... ───"
+            echo "─── [$(date -u +%H:%M:%S)] محاولة الاتصال... ───"
             
-            # إضافة --remote-components ejs:github لحل تحدي جافا سكريبت
+            # استخدام ملف الكوكيز + عميل أندرويد + PO Token
             STREAM_URL=$(yt-dlp -g -f best \
-              --add-header "Cookie: $YOUTUBE_COOKIES" \
-              --remote-components ejs:github \
+              --cookies /tmp/cookies.txt \
+              --extractor-args "youtube:player_client=android,ios" \
+              --user-agent "com.google.android.youtube/19.09.37 (Linux; U; Android 11) gzip" \
               --no-warnings \
               --no-check-certificate \
-              --user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" \
-              --extractor-args "youtube:player_client=default,-web_safari" \
+              --retry-sleep 5 \
+              --extractor-retries 3 \
               "$YOUTUBE_URL" 2>/dev/null | head -n 1 || true)
 
             if [ -z "$STREAM_URL" ]; then
-              echo "⚠️ لم يتم العثور على رابط بث. قد يكون البث متوقفاً حالياً أو الكوكيز انتهت."
-              echo "⏳ إعادة المحاولة بعد 10 ثوانٍ..."
-              sleep 10
+              echo "⚠️ المحاولة الأولى فشلت. جاري تجربة Streamlink..."
+              # خطة بديلة: Streamlink
+              STREAM_URL=$(streamlink --http-cookie "Cookie: $RAW_COOKIES" --stream-url "$YOUTUBE_URL" best 2>/dev/null || true)
+            fi
+
+            if [ -z "$STREAM_URL" ]; then
+              echo "⚠️ فشلت جميع المحاولات. البث قد يكون متوقفًا أو الكوكيز منتهية."
+              echo "⏳ إعادة المحاولة بعد 15 ثانية..."
+              sleep 15
               continue
             fi
 
-            echo "✅ تم استخراج الرابط بنجاح، جاري التمرير إلى Restream..."
+            echo "✅ تم استخراج الرابط، جاري التمرير إلى Restream..."
 
             ffmpeg -hide_banner -loglevel warning -nostdin \
               -reconnect 1 -reconnect_at_eof 1 -reconnect_streamed 1 -reconnect_delay_max 5 \

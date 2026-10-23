@@ -1,4 +1,4 @@
-name: YouTube to Restream (Native Node.js PO Token)
+name: YouTube VOD to Restream 24/7
 
 on:
   workflow_dispatch:
@@ -16,111 +16,26 @@ jobs:
 
     env:
       RESTREAM_KEY: "re_12552561_event81737fba9ada4713ab13ad7e04a36880"
-      YOUTUBE_URL: "https://www.youtube.com/live/eC4LfEVxvKg"
-      RAW_COOKIES: "__Secure-YNID=CtoBCAUSjAEB8QZuZjWcTXG9JU0sYr8QklViTrtUnYqFMLV9yU629lRWJDINQyeozV6-VyvAarKMG0ED8Wt0SDrH8If6uqeRWHS00Fi9VtKnh9E7aHUUSCeYHN3J2fJ1Qn7R-EdOMLb1gSPhQGid3sKH4CG84qyVXYdi6VqNxYcnNlKsbsw7FffqqIaZK4gudMLvvSgFMkUB3qmdT8tAKNapXLK-V47vnqSb2QTP0M5m9yE9iYxvPPqAocRA-G4D_vQtYaBJ496Hv7zVWGpVbvTSknV2qZOL_SU9Tgo; GPS=1; YSC=lmfdjAh_2bQ; VISITOR_INFO1_LIVE=KOhY259gc18; VISITOR_PRIVACY_METADATA=CgJJURIEGgAgPA%3D%3D; PREF=f6=40000000&tz=Asia.Baghdad; __Secure-1PSIDTS=sidts-CjUBkldj_x9GX33Z7u8RT2KjbHkPh50m3ggyGssI1mk6HLKntqTgW-YbuOoiUBd9kiGX4LxaOxAA; __Secure-3PSIDTS=sidts-CjUBkldj_x9GX33Z7u8RT2KjbHkPh50m3ggyGssI1mk6HLKntqTgW-YbuOoiUBd9kiGX4LxaOxAA; HSID=AdV8f3a6EAup9EfGp; SSID=AV2omS8jEiLInIRc_; APISID=cu6IlZQ6VxPidlQN/AGMaGwzVRrnype0Pd; SAPISID=OGKvzqgF20NZZRZj/AR739Ij0F45yUqvFP; __Secure-1PAPISID=OGKvzqgF20NZZRZj/AR739Ij0F45yUqvFP; __Secure-3PAPISID=OGKvzqgF20NZZRZj/AR739Ij0F45yUqvFP; SID=g.a000EAntDetJD0McOuQCxohUWZpSKlR9RldynZMTCNL3kLH7LOxCiQcWx_zsZVtwHcmo5xBgNwACgYKAVESARUSFQHGX2MiifxOqWPtF-mPZgDIM4MEwBoVAUF8yKoNETlOy1gA616K4N1mZhqQ0076; __Secure-1PSID=g.a000EAntDetJD0McOuQCxohUWZpSKlR9RldynZMTCNL3kLH7LOxCKfiU3n0XfnJzQZARNb3sNQACgYKAS8SARUSFQHGX2Mi8aPqZ4tRvp7TyrqhtujUEhoVAUF8yKpCLcdEP5OU4D5kyZBE5efV0076; __Secure-3PSID=g.a000EAntDetJD0McOuQCxohUWZpSKlR9RldynZMTCNL3kLH7LOxCr8xKlEzgYKM3bZ_IMUM5MgACgYKAWwSARUSFQHGX2Mibt76Vo6ejXS-X-ljZh0OaBoVAUF8yKqai9C_czYDfocsLjEHvB-20076; LOGIN_INFO=AFmmF2swRAIgFeuN9qwW5ooyO-6322_dqnpQ8P6c9V707sEJNYL9CsQCIEno-xX1YTrmsCcf4wbADq-GfpCoVTdQ1T6w_CfMbKrW:QUQ3MjNmeXNrMThZREgwVC1Pb0VpM1BDdHI3LVNhQ0FmalNfajR2b19kSEg1MEo2aHJvVnN6WUVxZFlFeGVRdlN0NjVxLVZCQjdfZ0xFalh2eDN6bjl6N013Q21mOTNBS3pUUXJrcXJOWkVJT0F5a0x5cWwxZGFqUnpMNnlsZWx3Z0F5S1VkSkxMSDhnRFc1Y1M1M09HOGxOTWs5MmkxelNn; __Secure-ROLLOUT_TOKEN=CNTZ-7rI-IXK4gEQ7pKMnI_RlwMY5Y74rI_RlwM%3D; SIDCC=APD_SKH4LSAsKHHY_fRpcNPbD_InnWDxUQux9Xj5LGBLbp6LK3bHH-Qqb9LYjCXpfq0No8SW; __Secure-1PSIDCC=APD_SKH5UQjWA57-0hkrqayKCA3LA3VYRXk86CUustYueN0FPQO3903DeJ_OvzBThYhWIcLh9Q; __Secure-3PSIDCC=APD_SKGmDbup0y3RSrK_mJXcStmYTuWqU5HNLhlsvydZSjFy9drmlnaDKfQTc7tpPcBGee-Yzw"
 
     steps:
-      - name: تثبيت الأدوات (ffmpeg, yt-dlp, Node.js)
+      - name: جلب الملفات
+        uses: actions/checkout@v3
+
+      - name: تثبيت الأدوات (ffmpeg, yt-dlp)
         run: |
           set -e
           echo "═══ التثبيت ═══"
+          sudo rm -f /etc/apt/sources.list.d/azure-cli.list /etc/apt/sources.list.d/microsoft-prod.list
           sudo apt-get update -qq
-          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ffmpeg nodejs npm git
+          sudo apt-get install -y --no-install-recommends ffmpeg
           
-          # تثبيت yt-dlp النسخة الليلية (لضمان دعم PO Token)
-          sudo curl -L https://github.com/yt-dlp/yt-dlp-nightly-builds/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp
+          sudo curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp
           sudo chmod a+rx /usr/local/bin/yt-dlp
           
           echo "✅ ffmpeg: $(ffmpeg -version | head -n 1)"
           echo "✅ yt-dlp: $(yt-dlp --version)"
-          echo "✅ Node.js: $(node --version)"
 
-      - name: إعداد خادم PO Token (بدون Docker)
+      - name: تشغيل السكربت
         run: |
-          set -e
-          echo "📦 استنساخ مستودع PO Token..."
-          git clone --single-branch --branch 2.0.0 https://github.com/Brainicism/bgutil-ytdlp-pot-provider.git /tmp/pot-provider
-          cd /tmp/pot-provider/server/
-          
-          echo "📦 تثبيت التبعيات وبناء الخادم..."
-          npm ci
-          npx tsc
-          
-          echo "🚀 تشغيل الخادم في الخلفية..."
-          nohup node build/main.js --port 4416 > /tmp/pot-server.log 2>&1 &
-          
-          # الانتظار حتى يبدأ الخادم
-          sleep 5
-          echo "✅ خادم PO Token يعمل على المنفذ 4416."
-          cat /tmp/pot-server.log | head -n 5
-
-      - name: تثبيت إضافة yt-dlp
-        run: |
-          echo "📦 تثبيت إضافة bgutil-ytdlp-pot-provider..."
-          python3 -m pip install --user --break-system-packages --quiet bgutil-ytdlp-pot-provider
-          echo "✅ تم تثبيت الإضافة."
-
-      - name: تحويل الكوكيز إلى ملف Netscape
-        run: |
-          python3 -c "
-          import os
-          raw = os.environ['RAW_COOKIES']
-          with open('/tmp/cookies.txt', 'w') as f:
-              f.write('# Netscape HTTP Cookie File\n')
-              for pair in raw.split(';'):
-                  pair = pair.strip()
-                  if not pair or '=' not in pair: continue
-                  name, value = pair.split('=', 1)
-                  f.write(f'.youtube.com\tTRUE\t/\tTRUE\t0\t{name}\t{value}\n')
-          "
-          echo "✅ تم إنشاء ملف cookies.txt"
-
-      - name: تشغيل البث (مع PO Token والكوكيز)
-        run: |
-          set -e
-          echo "🚀 بدء تشغيل الجسر: $YOUTUBE_URL -> Restream"
-
-          while true; do
-            echo "─── [$(date -u +%H:%M:%S)] محاولة الاتصال... ───"
-            
-            # استخدام yt-dlp مع خادم PO Token المحلي، الكوكيز، وعميل mweb
-            STREAM_URL=$(yt-dlp -g -f best \
-              --cookies /tmp/cookies.txt \
-              --extractor-args "youtube:player_client=mweb;pot_provider=http://127.0.0.1:4416" \
-              --no-warnings \
-              --no-check-certificate \
-              "$YOUTUBE_URL" 2>/dev/null | head -n 1 || true)
-
-            if [ -z "$STREAM_URL" ]; then
-              echo "⚠️ فشلت محاولة استخراج الرابط. قد يكون البث متوقفًا أو الكوكيز منتهية."
-              echo "⏳ إعادة المحاولة بعد 15 ثانية..."
-              sleep 15
-              continue
-            fi
-
-            echo "✅ تم استخراج الرابط بنجاح! جاري الاتصال بـ Restream..."
-
-            # تشغيل البث إلى Restream
-            ffmpeg -hide_banner -loglevel warning -nostdin \
-              -reconnect 1 -reconnect_at_eof 1 -reconnect_streamed 1 -reconnect_delay_max 5 \
-              -rw_timeout 10000000 \
-              -i "$STREAM_URL" \
-              -c:v copy -c:a aac -b:a 160k -ar 44100 -ac 2 \
-              -max_muxing_queue_size 4096 \
-              -flvflags no_duration_filesize \
-              -f flv "rtmp://live.restream.io/live/$RESTREAM_KEY" || true
-
-            echo "⚠️ انقطع البث. إعادة المحاولة خلال 5 ثوانٍ..."
-            sleep 5
-          done
-
-      - name: جدولة الرن التالي (احتياطي)
-        if: always()
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          setsid nohup bash -c "
-            sleep 19800
-            gh workflow run main.yml --ref '${{ github.ref_name }}'
-          " >/tmp/sched.log 2>&1 < /dev/null &
-          echo "✅ تم جدولة الرن التالي."
+          chmod +x stream.sh
+          ./stream.sh 

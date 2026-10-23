@@ -1,4 +1,4 @@
-name: YouTube VOD to Restream 24/7
+name: Direct Link Video to Restream 24/7
 
 on:
   workflow_dispatch:
@@ -21,21 +21,17 @@ jobs:
       - name: جلب الملفات
         uses: actions/checkout@v3
 
-      - name: تثبيت الأدوات (ffmpeg, yt-dlp)
+      - name: تثبيت الأدوات (ffmpeg, curl)
         run: |
           set -e
           echo "═══ التثبيت ═══"
           sudo rm -f /etc/apt/sources.list.d/azure-cli.list /etc/apt/sources.list.d/microsoft-prod.list
           sudo apt-get update -qq
-          sudo apt-get install -y --no-install-recommends ffmpeg
-          
-          sudo curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp
-          sudo chmod a+rx /usr/local/bin/yt-dlp
+          sudo apt-get install -y --no-install-recommends ffmpeg curl
           
           echo "✅ ffmpeg: $(ffmpeg -version | head -n 1)"
-          echo "✅ yt-dlp: $(yt-dlp --version)"
 
       - name: تشغيل السكربت
         run: |
           chmod +x stream.sh
-          ./stream.sh 
+          ./stream.sh

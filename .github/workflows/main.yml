@@ -1,4 +1,4 @@
-name: YouTube to Restream 24-7 Relay (Ultimate Fix)
+name: YouTube to Restream (PO Token Solution)
 
 on:
   workflow_dispatch:
@@ -20,19 +20,32 @@ jobs:
       RAW_COOKIES: "__Secure-YNID=CtoBCAUSjAEB8QZuZjWcTXG9JU0sYr8QklViTrtUnYqFMLV9yU629lRWJDINQyeozV6-VyvAarKMG0ED8Wt0SDrH8If6uqeRWHS00Fi9VtKnh9E7aHUUSCeYHN3J2fJ1Qn7R-EdOMLb1gSPhQGid3sKH4CG84qyVXYdi6VqNxYcnNlKsbsw7FffqqIaZK4gudMLvvSgFMkUB3qmdT8tAKNapXLK-V47vnqSb2QTP0M5m9yE9iYxvPPqAocRA-G4D_vQtYaBJ496Hv7zVWGpVbvTSknV2qZOL_SU9Tgo; GPS=1; YSC=lmfdjAh_2bQ; VISITOR_INFO1_LIVE=KOhY259gc18; VISITOR_PRIVACY_METADATA=CgJJURIEGgAgPA%3D%3D; PREF=f6=40000000&tz=Asia.Baghdad; __Secure-1PSIDTS=sidts-CjUBkldj_x9GX33Z7u8RT2KjbHkPh50m3ggyGssI1mk6HLKntqTgW-YbuOoiUBd9kiGX4LxaOxAA; __Secure-3PSIDTS=sidts-CjUBkldj_x9GX33Z7u8RT2KjbHkPh50m3ggyGssI1mk6HLKntqTgW-YbuOoiUBd9kiGX4LxaOxAA; HSID=AdV8f3a6EAup9EfGp; SSID=AV2omS8jEiLInIRc_; APISID=cu6IlZQ6VxPidlQN/AGMaGwzVRrnype0Pd; SAPISID=OGKvzqgF20NZZRZj/AR739Ij0F45yUqvFP; __Secure-1PAPISID=OGKvzqgF20NZZRZj/AR739Ij0F45yUqvFP; __Secure-3PAPISID=OGKvzqgF20NZZRZj/AR739Ij0F45yUqvFP; SID=g.a000EAntDetJD0McOuQCxohUWZpSKlR9RldynZMTCNL3kLH7LOxCiQcWx_zsZVtwHcmo5xBgNwACgYKAVESARUSFQHGX2MiifxOqWPtF-mPZgDIM4MEwBoVAUF8yKoNETlOy1gA616K4N1mZhqQ0076; __Secure-1PSID=g.a000EAntDetJD0McOuQCxohUWZpSKlR9RldynZMTCNL3kLH7LOxCKfiU3n0XfnJzQZARNb3sNQACgYKAS8SARUSFQHGX2Mi8aPqZ4tRvp7TyrqhtujUEhoVAUF8yKpCLcdEP5OU4D5kyZBE5efV0076; __Secure-3PSID=g.a000EAntDetJD0McOuQCxohUWZpSKlR9RldynZMTCNL3kLH7LOxCr8xKlEzgYKM3bZ_IMUM5MgACgYKAWwSARUSFQHGX2Mibt76Vo6ejXS-X-ljZh0OaBoVAUF8yKqai9C_czYDfocsLjEHvB-20076; LOGIN_INFO=AFmmF2swRAIgFeuN9qwW5ooyO-6322_dqnpQ8P6c9V707sEJNYL9CsQCIEno-xX1YTrmsCcf4wbADq-GfpCoVTdQ1T6w_CfMbKrW:QUQ3MjNmeXNrMThZREgwVC1Pb0VpM1BDdHI3LVNhQ0FmalNfajR2b19kSEg1MEo2aHJvVnN6WUVxZFlFeGVRdlN0NjVxLVZCQjdfZ0xFalh2eDN6bjl6N013Q21mOTNBS3pUUXJrcXJOWkVJT0F5a0x5cWwxZGFqUnpMNnlsZWx3Z0F5S1VkSkxMSDhnRFc1Y1M1M09HOGxOTWs5MmkxelNn; __Secure-ROLLOUT_TOKEN=CNTZ-7rI-IXK4gEQ7pKMnI_RlwMY5Y74rI_RlwM%3D; SIDCC=APD_SKH4LSAsKHHY_fRpcNPbD_InnWDxUQux9Xj5LGBLbp6LK3bHH-Qqb9LYjCXpfq0No8SW; __Secure-1PSIDCC=APD_SKH5UQjWA57-0hkrqayKCA3LA3VYRXk86CUustYueN0FPQO3903DeJ_OvzBThYhWIcLh9Q; __Secure-3PSIDCC=APD_SKGmDbup0y3RSrK_mJXcStmYTuWqU5HNLhlsvydZSjFy9drmlnaDKfQTc7tpPcBGee-Yzw"
 
     steps:
-      - name: تثبيت الأدوات (ffmpeg, yt-dlp nightly)
+      - name: تثبيت الأدوات (ffmpeg, yt-dlp, Node.js, Docker)
         run: |
           set -e
           echo "═══ التثبيت ═══"
           sudo apt-get update -qq
-          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ffmpeg nodejs npm
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ffmpeg nodejs npm docker.io
           
-          # تثبيت yt-dlp النسخة الليلية (أحدث إصلاحات)
+          # تثبيت yt-dlp النسخة الليلية (لضمان الدعم الكامل لـ PO Token)
           sudo curl -L https://github.com/yt-dlp/yt-dlp-nightly-builds/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp
           sudo chmod a+rx /usr/local/bin/yt-dlp
           
           echo "✅ ffmpeg: $(ffmpeg -version | head -n 1)"
           echo "✅ yt-dlp: $(yt-dlp --version)"
+
+      - name: تشغيل مزود PO Token (Docker)
+        run: |
+          echo "🚀 تشغيل حاوية PO Token Provider..."
+          sudo docker run --name bgutil-provider -d --init -p 127.0.0.1:4416:4416 brainicism/bgutil-ytdlp-pot-provider
+          sleep 5
+          echo "✅ مزود PO Token يعمل على المنفذ 4416."
+
+      - name: تثبيت إضافة yt-dlp للـ PO Token
+        run: |
+          echo "📦 تثبيت إضافة bgutil-ytdlp-pot-provider..."
+          python3 -m pip install --user --break-system-packages --quiet bgutil-ytdlp-pot-provider
+          echo "✅ تم تثبيت الإضافة."
 
       - name: تحويل الكوكيز إلى ملف Netscape
         run: |
@@ -48,9 +61,8 @@ jobs:
                   f.write(f'.youtube.com\tTRUE\t/\tTRUE\t0\t{name}\t{value}\n')
           "
           echo "✅ تم إنشاء ملف cookies.txt"
-          head -n 3 /tmp/cookies.txt
 
-      - name: تشغيل البث (البحث عن الرابط)
+      - name: تشغيل البث (مع PO Token والكوكيز)
         run: |
           set -e
           echo "🚀 بدء تشغيل الجسر: $YOUTUBE_URL -> Restream"
@@ -58,17 +70,16 @@ jobs:
           while true; do
             echo "─── [$(date -u +%H:%M:%S)] محاولة الاتصال... ───"
             
-            # استخدام yt-dlp مع خدعة تطبيق الأندرويد + الكوكيز
+            # استخدام yt-dlp مع مزود PO Token، الكوكيز، وعميل mweb
             STREAM_URL=$(yt-dlp -g -f best \
               --cookies /tmp/cookies.txt \
-              --extractor-args "youtube:player_client=android,ios" \
-              --user-agent "com.google.android.youtube/19.09.37 (Linux; U; Android 11) gzip" \
+              --extractor-args "youtube:player_client=mweb;pot_provider=http://127.0.0.1:4416" \
               --no-warnings \
               --no-check-certificate \
               "$YOUTUBE_URL" 2>/dev/null | head -n 1 || true)
 
             if [ -z "$STREAM_URL" ]; then
-              echo "⚠️ فشلت محاولة استخراج الرابط. قد يكون البث متوقفًا أو الكوكيز محظورة."
+              echo "⚠️ فشلت محاولة استخراج الرابط. قد يكون البث متوقفًا أو الكوكيز منتهية."
               echo "⏳ إعادة المحاولة بعد 15 ثانية..."
               sleep 15
               continue
@@ -76,7 +87,7 @@ jobs:
 
             echo "✅ تم استخراج الرابط بنجاح! جاري الاتصال بـ Restream..."
 
-            # بدء البث إلى Restream (إذا انقطع، سيعيد الحلقة اللانهائية المحاولة)
+            # تشغيل البث إلى Restream
             ffmpeg -hide_banner -loglevel warning -nostdin \
               -reconnect 1 -reconnect_at_eof 1 -reconnect_streamed 1 -reconnect_delay_max 5 \
               -rw_timeout 10000000 \
@@ -86,7 +97,7 @@ jobs:
               -flvflags no_duration_filesize \
               -f flv "rtmp://live.restream.io/live/$RESTREAM_KEY" || true
 
-            echo "⚠️ انقطع البث أو فشل الاتصال. إعادة المحاولة خلال 5 ثوانٍ..."
+            echo "⚠️ انقطع البث. إعادة المحاولة خلال 5 ثوانٍ..."
             sleep 5
           done
 

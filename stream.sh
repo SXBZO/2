@@ -1,73 +1,37 @@
 #!/bin/bash
 
 # ═══════════════════════════════════════════════════
-#  YouTube Video to Restream 24/7 (Loop with Cookies)
+#  Direct Link Video to Restream 24/7 (Loop)
 # ═══════════════════════════════════════════════════
 
-YOUTUBE_URL="https://youtu.be/P0uaLRO6V1U"
-VIDEO_FILE="/tmp/looped_video.mp4"
-COOKIE_FILE="/tmp/cookies.txt"
+DIRECT_URL="https://rr2---sn-4g5lznlr.googlevideo.com/videoplayback?expire=1792816277&ei=NeDbaszQBuzGsfIP0JTJ2Ao&ip=89.249.193.85&id=o-AHnxIfQKcERzNaVO7GvgJxcOUcYzgQODnUg3Iv1sFJa3&itag=18&source=youtube&requiressl=yes&xpc=EgVo2aDSNQ%3D%3D&rms=au%2Cau&bui=AWzQHwrHLpAzldfXzSOly-lBl5OpGJWy30KzPSasYYuJbnLj0fjARmf4iLnit8Om1khROopqP2roGpfR&spc=mpRQ_z4qnZtltfyK3OutcmVORFVkbkW3DXZRfPxclW9Z7jMoDHJblMfA4658jyxlFMo&vprv=1&svpuc=1&mime=video%2Fmp4&rqh=1&cnr=14&ratebypass=yes&dur=8325.120&lmt=1785460026765468&epbp=1&fexp=51565116&c=ANDROID&txp=4538534&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cxpc%2Cbui%2Cspc%2Cvprv%2Csvpuc%2Cmime%2Crqh%2Ccnr%2Cratebypass%2Cdur%2Clmt&sig=AE0s2JYwRAIgErQak9xGZujFkIjD0AIiA_pEmS6_s7RdPbOU9uOPT68CIE-k7BuaVFYWK-3PNuNoJ1SZiUynTxBzJti8Y2tEmzBi&rm=sn-nx5zr7z&rrc=104,191&req_id=f9f9f0cccbeca3ee&cps=0&ipbypass=yes&redirect_counter=2&cm2rm=sn-p5qeey7s&cms_redirect=yes&cmsv=e&met=1792794686,&mh=1j&mip=37.238.36.147&mm=34&mn=sn-4g5lznlr&ms=ltu&mt=1792794295&mv=m&mvi=2&pl=24&lsparams=cps,ipbypass,met,mh,mip,mm,mn,ms,mv,mvi,pl,rms&lsig=APaTxxMwRgIhAKFQjd-b_Uf4AN3fkd2Kg9e0zbFASHDc-iu0d9QfVXNuAiEA9p4XXgcmHVAcH3XtPXmdeexKlc3wU3TpyXlCH7jN8SI%3D"
 
-# 1. كتابة ملف الكوكيز بالصيغة التي أرسلتها (Netscape)
-cat << 'EOF' > "$COOKIE_FILE"
-# Netscape HTTP Cookie File
-.youtube.com	TRUE	/	TRUE	0	__Secure-YNID	CtoBCAUSjAEB8QZuZjWcTXG9JU0sYr8QklViTrtUnYqFMLV9yU629lRWJDINQyeozV6-VyvAarKMG0ED8Wt0SDrH8If6uqeRWHS00Fi9VtKnh9E7aHUUSCeYHN3J2fJ1Qn7R-EdOMLb1gSPhQGid3sKH4CG84qyVXYdi6VqNxYcnNlKsbsw7FffqqIaZK4gudMLvvSgFMkUB3qmdT8tAKNapXLK-V47vnqSb2QTP0M5m9yE9iYxvPPqAocRA-G4D_vQtYaBJ496Hv7zVWGpVbvTSknV2qZOL_SU9Tgo
-.youtube.com	TRUE	/	FALSE	0	GPS	1
-.youtube.com	TRUE	/	FALSE	0	YSC	lmfdjAh_2bQ
-.youtube.com	TRUE	/	FALSE	0	VISITOR_INFO1_LIVE	KOhY259gc18
-.youtube.com	TRUE	/	FALSE	0	VISITOR_PRIVACY_METADATA	CgJJURIEGgAgPA%3D%3D
-.youtube.com	TRUE	/	TRUE	0	__Secure-1PSIDTS	sidts-CjUBkldj_x9GX33Z7u8RT2KjbHkPh50m3ggyGssI1mk6HLKntqTgW-YbuOoiUBd9kiGX4LxaOxAA
-.youtube.com	TRUE	/	TRUE	0	__Secure-3PSIDTS	sidts-CjUBkldj_x9GX33Z7u8RT2KjbHkPh50m3ggyGssI1mk6HLKntqTgW-YbuOoiUBd9kiGX4LxaOxAA
-.youtube.com	TRUE	/	FALSE	0	HSID	AdV8f3a6EAup9EfGp
-.youtube.com	TRUE	/	TRUE	0	SSID	AV2omS8jEiLInIRc_
-.youtube.com	TRUE	/	FALSE	0	APISID	cu6IlZQ6VxPidlQN/AGMaGwzVRrnype0Pd
-.youtube.com	TRUE	/	TRUE	0	SAPISID	OGKvzqgF20NZZRZj/AR739Ij0F45yUqvFP
-.youtube.com	TRUE	/	TRUE	0	__Secure-1PAPISID	OGKvzqgF20NZZRZj/AR739Ij0F45yUqvFP
-.youtube.com	TRUE	/	TRUE	0	__Secure-3PAPISID	OGKvzqgF20NZZRZj/AR739Ij0F45yUqvFP
-.youtube.com	TRUE	/	FALSE	0	SID	g.a000EAntDetJD0McOuQCxohUWZpSKlR9RldynZMTCNL3kLH7LOxCiQcWx_zsZVtwHcmo5xBgNwACgYKAVESARUSFQHGX2MiifxOqWPtF-mPZgDIM4MEwBoVAUF8yKoNETlOy1gA616K4N1mZhqQ0076
-.youtube.com	TRUE	/	TRUE	0	__Secure-1PSID	g.a000EAntDetJD0McOuQCxohUWZpSKlR9RldynZMTCNL3kLH7LOxCKfiU3n0XfnJzQZARNb3sNQACgYKAS8SARUSFQHGX2Mi8aPqZ4tRvp7TyrqhtujUEhoVAUF8yKpCLcdEP5OU4D5kyZBE5efV0076
-.youtube.com	TRUE	/	TRUE	0	__Secure-3PSID	g.a000EAntDetJD0McOuQCxohUWZpSKlR9RldynZMTCNL3kLH7LOxCr8xKlEzgYKM3bZ_IMUM5MgACgYKAWwSARUSFQHGX2Mibt76Vo6ejXS-X-ljZh0OaBoVAUF8yKqai9C_czYDfocsLjEHvB-20076
-.youtube.com	TRUE	/	TRUE	0	LOGIN_INFO	AFmmF2swRAIgFeuN9qwW5ooyO-6322_dqnpQ8P6c9V707sEJNYL9CsQCIEno-xX1YTrmsCcf4wbADq-GfpCoVTdQ1T6w_CfMbKrW:QUQ3MjNmeXNrMThZREgwVC1Pb0VpM1BDdHI3LVNhQ0FmalNfajR2b19kSEg1MEo2aHJvVnN6WUVxZFlFeGVRdlN0NjVxLVZCQjdfZ0xFalh2eDN6bjl6N013Q21mOTNBS3pUUXJrcXJOWkVJT0F5a0x5cWwxZGFqUnpMNnlsZWx3Z0F5S1VkSkxMSDhnRFc1Y1M1M09HOGxOTWs5MmkxelNn
-.youtube.com	TRUE	/	TRUE	0	__Secure-ROLLOUT_TOKEN	CNTZ-7rI-IXK4gEQ7pKMnI_RlwMY5Y74rI_RlwM%3D
-.youtube.com	TRUE	/	FALSE	0	PREF	f6=40000000&tz=Asia.Baghdad&f7=100
-.youtube.com	TRUE	/	FALSE	0	SIDCC	APD_SKH7g76JIHD1tI9f-JsL2hQFAPs_oCUBcLhjE8SsbaD368gycjZgjiWg4RulGxH39oYC
-.youtube.com	TRUE	/	TRUE	0	__Secure-1PSIDCC	APD_SKHhW77B2IVhAkEZ7HDCl60zfpI03WG1SgMl8TDBHyvNXkrPrZ44BPzXczCtdKiX6UN-2A
-.youtube.com	TRUE	/	TRUE	0	__Secure-3PSIDCC	APD_SKH-I8gaI1f2dW4jpmKtuvU3_AIcVVbrkbro8knpY4YDGta_ceY4TMUBL2G16-uUdeXY1w
-EOF
+VIDEO_FILE="/tmp/video_loop.mp4"
 
-echo "🍪 تم تجهيز ملف الكوكيز."
-
-# 2. تحميل الفيديو (إذا لم يكن موجوداً)
+# 1. تحميل الفيديو (إذا لم يكن موجوداً)
 if [ ! -f "$VIDEO_FILE" ]; then
-    echo "⬇️  جاري تحميل الفيديو لأول مرة... (قد يستغرق دقائق)"
+    echo "⬇️  جاري تحميل الفيديو من الرابط المباشر..."
     
-    # محاولة التحميل باستخدام الكوكيز
-    yt-dlp --cookies "$COOKIE_FILE" \
-           -f "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best" \
-           --merge-output-format mp4 \
-           --no-warnings \
-           -o "$VIDEO_FILE" \
-           "$YOUTUBE_URL"
+    # استخدام curl لتحميل الفيديو
+    curl -L -o "$VIDEO_FILE" "$DIRECT_URL"
     
-    if [ ! -f "$VIDEO_FILE" ]; then
-        echo "❌ فشل تحميل الفيديو. يوتيوب رفض الطلب (حظر IP)."
+    # التحقق من نجاح التحميل (حجم الملف أكبر من 1 ميجابايت)
+    FILE_SIZE=$(stat -c%s "$VIDEO_FILE" 2>/dev/null || echo 0)
+    if [ "$FILE_SIZE" -lt 1048576 ]; then
+        echo "❌ فشل تحميل الفيديو. قد يكون الرابط منتهي الصلاحية أو محظوراً."
         echo "⏳ سيعيد السكربت المحاولة بعد 60 ثانية..."
         sleep 60
         # إعادة المحاولة بشكل لا نهائي حتى ينجح التحميل
-        while [ ! -f "$VIDEO_FILE" ]; do
-            yt-dlp --cookies "$COOKIE_FILE" \
-                   -f "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best" \
-                   --merge-output-format mp4 \
-                   --no-warnings \
-                   -o "$VIDEO_FILE" \
-                   "$YOUTUBE_URL"
-            [ ! -f "$VIDEO_FILE" ] && sleep 60
+        while [ ! -s "$VIDEO_FILE" ] || [ "$(stat -c%s "$VIDEO_FILE" 2>/dev/null || echo 0)" -lt 1048576 ]; do
+            curl -L -o "$VIDEO_FILE" "$DIRECT_URL"
+            [ -s "$VIDEO_FILE" ] && [ "$(stat -c%s "$VIDEO_FILE")" -gt 1048576 ] && break
+            sleep 60
         done
     fi
-    echo "✅ تم تحميل الفيديو بنجاح."
+    echo "✅ تم تحميل الفيديو بنجاح (الحجم: $(du -h "$VIDEO_FILE" | cut -f1))."
 fi
 
-# 3. حلقة البث اللانهائية (24/7)
+# 2. حلقة البث اللانهائية (24/7)
 echo "🚀 بدء البث المتكرر إلى Restream..."
 while true; do
     # استخدام -stream_loop -1 للتكرار اللامتناهي

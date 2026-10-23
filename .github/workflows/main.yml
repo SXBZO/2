@@ -1,0 +1,92 @@
+name: YouTube to Restream 24-7 Relay
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 */6 * * *' # احتياطي كل 6 ساعات
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  relay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+
+    # ═══════════════════════════════════════════════════
+    # 🔴 ضع مفتاح ريستريم ورابط اليوتيوب هنا 🔴
+    # ═══════════════════════════════════════════════════
+    env:
+      RESTREAM_KEY: "ضع_مفتاح_ريستريم_هنا_مثال_re_123456789"
+      YOUTUBE_URL: "https://www.youtube.com/live/eC4LfEVxvKg"
+    # ═══════════════════════════════════════════════════
+
+    steps:
+      - name: تثبيت ffmpeg و yt-dlp
+        run: |
+          set -e
+          echo "═══ التثبيت ═══"
+          # إزالة مستودعات Microsoft لتجنب تعارض الحزم
+          sudo rm -f /etc/apt/sources.list.d/azure-cli.list /etc/apt/sources.list.d/microsoft-prod.list
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ffmpeg
+          
+          # تثبيت yt-dlp (أحدث إصدار)
+          sudo curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp
+          sudo chmod a+rx /usr/local/bin/yt-dlp
+          
+          echo "✅ ffmpeg: $(ffmpeg -version | head -n 1)"
+          echo "✅ yt-dlp: $(yt-dlp --version)"
+
+      - name: تشغيل البث (مع إعادة الاتصال التلقائي)
+        run: |
+          set -e
+          if [ -z "$RESTREAM_KEY" ] || [ "$RESTREAM_KEY" == "ضع_مفتاح_ريستريم_هنا_مثال_re_123456789" ]; then
+            echo "❌ خطأ: يرجى وضع مفتاح RESTREAM_KEY الصحيح في أعلى ملف main.yml"
+            exit 1
+          fi
+
+          echo "🚀 بدء تشغيل الجسر: $YOUTUBE_URL -> Restream"
+
+          # حلقة لا نهائية: إذا انقطع البث لأي سبب، تعيد المحاولة تلقائياً بعد 5 ثوانٍ
+          while true; do
+            echo "─── [$(date -u +%H:%M:%S)] محاولة الاتصال بالمصدر... ───"
+
+            # 1. استخراج رابط البث المباشر (m3u8) باستخدام yt-dlp
+            # نضع || true لتجنب فشل السكربت إذا لم يجد رابطاً
+            STREAM_URL=$(yt-dlp -g -f best "$YOUTUBE_URL" 2>/dev/null | head -n 1 || true)
+
+            if [ -z "$STREAM_URL" ]; then
+              echo "⚠️ لم يتم العثور على رابط بث (قد يكون البث متوقفاً). إعادة المحاولة بعد 10 ثوانٍ..."
+              sleep 10
+              continue
+            fi
+
+            echo "✅ تم استخراج الرابط، جاري التمرير إلى Restream..."
+
+            # 2. تمرير البث باستخدام ffmpeg
+            ffmpeg -hide_banner -loglevel warning -nostdin \
+              -reconnect 1 -reconnect_at_eof 1 -reconnect_streamed 1 -reconnect_delay_max 5 \
+              -rw_timeout 10000000 \
+              -i "$STREAM_URL" \
+              -c:v copy -c:a aac -b:a 160k -ar 44100 -ac 2 \
+              -max_muxing_queue_size 4096 \
+              -flvflags no_duration_filesize \
+              -f flv "rtmp://live.restream.io/live/$RESTREAM_KEY" || true
+
+            echo "⚠️ انقطع البث أو فشل الاتصال. إعادة المحاولة خلال 5 ثوانٍ..."
+            sleep 5
+          done
+
+      - name: جدولة الرن التالي (احتياطي)
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # إذا فشل الرن أو انتهى وقته، يطلق رناً جديداً بعد 5 ساعات و30 دقيقة
+          setsid nohup bash -c "
+            sleep 19800
+            gh workflow run main.yml --ref '${{ github.ref_name }}'
+          " >/tmp/sched.log 2>&1 < /dev/null &
+          echo "✅ تم جدولة الرن التالي."

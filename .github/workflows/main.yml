@@ -1,4 +1,4 @@
-name: YouTube to Restream 24-7 Relay
+name: YouTube to Restream 24-7 Relay (Hardcoded Cookies)
 
 on:
   workflow_dispatch:
@@ -17,9 +17,11 @@ jobs:
     env:
       RESTREAM_KEY: "re_12552561_event81737fba9ada4713ab13ad7e04a36880"
       YOUTUBE_URL: "https://www.youtube.com/live/eC4LfEVxvKg"
+      # تم وضع الكوكيز مباشرة هنا بناءً على طلبك
+      YOUTUBE_COOKIES: "__Secure-YNID=CtoBCAUSjAEB8QZuZjWcTXG9JU0sYr8QklViTrtUnYqFMLV9yU629lRWJDINQyeozV6-VyvAarKMG0ED8Wt0SDrH8If6uqeRWHS00Fi9VtKnh9E7aHUUSCeYHN3J2fJ1Qn7R-EdOMLb1gSPhQGid3sKH4CG84qyVXYdi6VqNxYcnNlKsbsw7FffqqIaZK4gudMLvvSgFMkUB3qmdT8tAKNapXLK-V47vnqSb2QTP0M5m9yE9iYxvPPqAocRA-G4D_vQtYaBJ496Hv7zVWGpVbvTSknV2qZOL_SU9Tgo; GPS=1; YSC=lmfdjAh_2bQ; VISITOR_INFO1_LIVE=KOhY259gc18; VISITOR_PRIVACY_METADATA=CgJJURIEGgAgPA%3D%3D; PREF=f6=40000000&tz=Asia.Baghdad; __Secure-1PSIDTS=sidts-CjUBkldj_x9GX33Z7u8RT2KjbHkPh50m3ggyGssI1mk6HLKntqTgW-YbuOoiUBd9kiGX4LxaOxAA; __Secure-3PSIDTS=sidts-CjUBkldj_x9GX33Z7u8RT2KjbHkPh50m3ggyGssI1mk6HLKntqTgW-YbuOoiUBd9kiGX4LxaOxAA; HSID=AdV8f3a6EAup9EfGp; SSID=AV2omS8jEiLInIRc_; APISID=cu6IlZQ6VxPidlQN/AGMaGwzVRrnype0Pd; SAPISID=OGKvzqgF20NZZRZj/AR739Ij0F45yUqvFP; __Secure-1PAPISID=OGKvzqgF20NZZRZj/AR739Ij0F45yUqvFP; __Secure-3PAPISID=OGKvzqgF20NZZRZj/AR739Ij0F45yUqvFP; SID=g.a000EAntDetJD0McOuQCxohUWZpSKlR9RldynZMTCNL3kLH7LOxCiQcWx_zsZVtwHcmo5xBgNwACgYKAVESARUSFQHGX2MiifxOqWPtF-mPZgDIM4MEwBoVAUF8yKoNETlOy1gA616K4N1mZhqQ0076; __Secure-1PSID=g.a000EAntDetJD0McOuQCxohUWZpSKlR9RldynZMTCNL3kLH7LOxCKfiU3n0XfnJzQZARNb3sNQACgYKAS8SARUSFQHGX2Mi8aPqZ4tRvp7TyrqhtujUEhoVAUF8yKpCLcdEP5OU4D5kyZBE5efV0076; __Secure-3PSID=g.a000EAntDetJD0McOuQCxohUWZpSKlR9RldynZMTCNL3kLH7LOxCr8xKlEzgYKM3bZ_IMUM5MgACgYKAWwSARUSFQHGX2Mibt76Vo6ejXS-X-ljZh0OaBoVAUF8yKqai9C_czYDfocsLjEHvB-20076; LOGIN_INFO=AFmmF2swRAIgFeuN9qwW5ooyO-6322_dqnpQ8P6c9V707sEJNYL9CsQCIEno-xX1YTrmsCcf4wbADq-GfpCoVTdQ1T6w_CfMbKrW:QUQ3MjNmeXNrMThZREgwVC1Pb0VpM1BDdHI3LVNhQ0FmalNfajR2b19kSEg1MEo2aHJvVnN6WUVxZFlFeGVRdlN0NjVxLVZCQjdfZ0xFalh2eDN6bjl6N013Q21mOTNBS3pUUXJrcXJOWkVJT0F5a0x5cWwxZGFqUnpMNnlsZWx3Z0F5S1VkSkxMSDhnRFc1Y1M1M09HOGxOTWs5MmkxelNn; __Secure-ROLLOUT_TOKEN=CNTZ-7rI-IXK4gEQ7pKMnI_RlwMY5Y74rI_RlwM%3D; SIDCC=APD_SKH4LSAsKHHY_fRpcNPbD_InnWDxUQux9Xj5LGBLbp6LK3bHH-Qqb9LYjCXpfq0No8SW; __Secure-1PSIDCC=APD_SKH5UQjWA57-0hkrqayKCA3LA3VYRXk86CUustYueN0FPQO3903DeJ_OvzBThYhWIcLh9Q; __Secure-3PSIDCC=APD_SKGmDbup0y3RSrK_mJXcStmYTuWqU5HNLhlsvydZSjFy9drmlnaDKfQTc7tpPcBGee-Yzw"
 
     steps:
-      - name: تثبيت ffmpeg و yt-dlp و streamlink
+      - name: تثبيت ffmpeg و yt-dlp
         run: |
           set -e
           echo "═══ التثبيت ═══"
@@ -30,13 +32,10 @@ jobs:
           sudo curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp
           sudo chmod a+rx /usr/local/bin/yt-dlp
           
-          pip3 install --user --break-system-packages --quiet --upgrade streamlink
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
-          
           echo "✅ ffmpeg: $(ffmpeg -version | head -n 1)"
           echo "✅ yt-dlp: $(yt-dlp --version)"
 
-      - name: تشغيل البث (مع إعادة الاتصال التلقائي)
+      - name: تشغيل البث (مع الكوكيز المدمجة)
         run: |
           set -e
           echo "🚀 بدء تشغيل الجسر: $YOUTUBE_URL -> Restream"
@@ -44,38 +43,17 @@ jobs:
           while true; do
             echo "─── [$(date -u +%H:%M:%S)] محاولة الاتصال بالمصدر... ───"
             
-            STREAM_URL=""
-
-            # المحاولة 1: yt-dlp مع خيارات متقدمة (بدون كوكيز)
-            echo "🔄 محاولة 1: yt-dlp (Android/iOS/Web Embedded)..."
+            # استخراج الرابط باستخدام الكوكيز المدمجة في المتغيرات
             STREAM_URL=$(yt-dlp -g -f best \
+              --add-header "Cookie: $YOUTUBE_COOKIES" \
               --no-warnings \
               --no-check-certificate \
               --user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" \
-              --extractor-args "youtube:player_client=android,ios,web_embedded" \
-              --live-from-start \
+              --extractor-args "youtube:player_client=web,android,ios" \
               "$YOUTUBE_URL" 2>/dev/null | head -n 1 || true)
 
-            # المحاولة 2: yt-dlp مع player_client افتراضي
             if [ -z "$STREAM_URL" ]; then
-              echo "🔄 محاولة 2: yt-dlp (Default Client)..."
-              STREAM_URL=$(yt-dlp -g -f best \
-                --no-warnings \
-                --no-check-certificate \
-                --user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" \
-                "$YOUTUBE_URL" 2>/dev/null | head -n 1 || true)
-            fi
-
-            # المحاولة 3: streamlink
-            if [ -z "$STREAM_URL" ]; then
-              echo "🔄 محاولة 3: streamlink..."
-              STREAM_URL=$(streamlink --stream-url "$YOUTUBE_URL" best 2>/dev/null || true)
-            fi
-
-            # التحقق النهائي: إذا لم نجد رابطاً، لا نشغل ffmpeg
-            if [ -z "$STREAM_URL" ]; then
-              echo "⚠️ لم يتم العثور على رابط بث. البث قد يكون متوقفاً حالياً، أو يوتيوب يحظر سيرفر GitHub."
-              echo "💡 الحل الوحيد المضمون 100% هو استخدام الكوكيز (Cookies)."
+              echo "⚠️ لم يتم العثور على رابط بث. قد يكون البث متوقفاً حالياً."
               echo "⏳ إعادة المحاولة بعد 10 ثوانٍ..."
               sleep 10
               continue
@@ -83,7 +61,6 @@ jobs:
 
             echo "✅ تم استخراج الرابط بنجاح، جاري التمرير إلى Restream..."
 
-            # تشغيل ffmpeg مع الرابط المؤكد
             ffmpeg -hide_banner -loglevel warning -nostdin \
               -reconnect 1 -reconnect_at_eof 1 -reconnect_streamed 1 -reconnect_delay_max 5 \
               -rw_timeout 10000000 \

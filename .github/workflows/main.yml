@@ -1,4 +1,4 @@
-name: YouTube to Restream (PO Token Solution)
+name: YouTube to Restream (Native Node.js PO Token)
 
 on:
   workflow_dispatch:
@@ -20,28 +20,41 @@ jobs:
       RAW_COOKIES: "__Secure-YNID=CtoBCAUSjAEB8QZuZjWcTXG9JU0sYr8QklViTrtUnYqFMLV9yU629lRWJDINQyeozV6-VyvAarKMG0ED8Wt0SDrH8If6uqeRWHS00Fi9VtKnh9E7aHUUSCeYHN3J2fJ1Qn7R-EdOMLb1gSPhQGid3sKH4CG84qyVXYdi6VqNxYcnNlKsbsw7FffqqIaZK4gudMLvvSgFMkUB3qmdT8tAKNapXLK-V47vnqSb2QTP0M5m9yE9iYxvPPqAocRA-G4D_vQtYaBJ496Hv7zVWGpVbvTSknV2qZOL_SU9Tgo; GPS=1; YSC=lmfdjAh_2bQ; VISITOR_INFO1_LIVE=KOhY259gc18; VISITOR_PRIVACY_METADATA=CgJJURIEGgAgPA%3D%3D; PREF=f6=40000000&tz=Asia.Baghdad; __Secure-1PSIDTS=sidts-CjUBkldj_x9GX33Z7u8RT2KjbHkPh50m3ggyGssI1mk6HLKntqTgW-YbuOoiUBd9kiGX4LxaOxAA; __Secure-3PSIDTS=sidts-CjUBkldj_x9GX33Z7u8RT2KjbHkPh50m3ggyGssI1mk6HLKntqTgW-YbuOoiUBd9kiGX4LxaOxAA; HSID=AdV8f3a6EAup9EfGp; SSID=AV2omS8jEiLInIRc_; APISID=cu6IlZQ6VxPidlQN/AGMaGwzVRrnype0Pd; SAPISID=OGKvzqgF20NZZRZj/AR739Ij0F45yUqvFP; __Secure-1PAPISID=OGKvzqgF20NZZRZj/AR739Ij0F45yUqvFP; __Secure-3PAPISID=OGKvzqgF20NZZRZj/AR739Ij0F45yUqvFP; SID=g.a000EAntDetJD0McOuQCxohUWZpSKlR9RldynZMTCNL3kLH7LOxCiQcWx_zsZVtwHcmo5xBgNwACgYKAVESARUSFQHGX2MiifxOqWPtF-mPZgDIM4MEwBoVAUF8yKoNETlOy1gA616K4N1mZhqQ0076; __Secure-1PSID=g.a000EAntDetJD0McOuQCxohUWZpSKlR9RldynZMTCNL3kLH7LOxCKfiU3n0XfnJzQZARNb3sNQACgYKAS8SARUSFQHGX2Mi8aPqZ4tRvp7TyrqhtujUEhoVAUF8yKpCLcdEP5OU4D5kyZBE5efV0076; __Secure-3PSID=g.a000EAntDetJD0McOuQCxohUWZpSKlR9RldynZMTCNL3kLH7LOxCr8xKlEzgYKM3bZ_IMUM5MgACgYKAWwSARUSFQHGX2Mibt76Vo6ejXS-X-ljZh0OaBoVAUF8yKqai9C_czYDfocsLjEHvB-20076; LOGIN_INFO=AFmmF2swRAIgFeuN9qwW5ooyO-6322_dqnpQ8P6c9V707sEJNYL9CsQCIEno-xX1YTrmsCcf4wbADq-GfpCoVTdQ1T6w_CfMbKrW:QUQ3MjNmeXNrMThZREgwVC1Pb0VpM1BDdHI3LVNhQ0FmalNfajR2b19kSEg1MEo2aHJvVnN6WUVxZFlFeGVRdlN0NjVxLVZCQjdfZ0xFalh2eDN6bjl6N013Q21mOTNBS3pUUXJrcXJOWkVJT0F5a0x5cWwxZGFqUnpMNnlsZWx3Z0F5S1VkSkxMSDhnRFc1Y1M1M09HOGxOTWs5MmkxelNn; __Secure-ROLLOUT_TOKEN=CNTZ-7rI-IXK4gEQ7pKMnI_RlwMY5Y74rI_RlwM%3D; SIDCC=APD_SKH4LSAsKHHY_fRpcNPbD_InnWDxUQux9Xj5LGBLbp6LK3bHH-Qqb9LYjCXpfq0No8SW; __Secure-1PSIDCC=APD_SKH5UQjWA57-0hkrqayKCA3LA3VYRXk86CUustYueN0FPQO3903DeJ_OvzBThYhWIcLh9Q; __Secure-3PSIDCC=APD_SKGmDbup0y3RSrK_mJXcStmYTuWqU5HNLhlsvydZSjFy9drmlnaDKfQTc7tpPcBGee-Yzw"
 
     steps:
-      - name: تثبيت الأدوات (ffmpeg, yt-dlp, Node.js, Docker)
+      - name: تثبيت الأدوات (ffmpeg, yt-dlp, Node.js)
         run: |
           set -e
           echo "═══ التثبيت ═══"
           sudo apt-get update -qq
-          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ffmpeg nodejs npm docker.io
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends ffmpeg nodejs npm git
           
-          # تثبيت yt-dlp النسخة الليلية (لضمان الدعم الكامل لـ PO Token)
+          # تثبيت yt-dlp النسخة الليلية (لضمان دعم PO Token)
           sudo curl -L https://github.com/yt-dlp/yt-dlp-nightly-builds/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp
           sudo chmod a+rx /usr/local/bin/yt-dlp
           
           echo "✅ ffmpeg: $(ffmpeg -version | head -n 1)"
           echo "✅ yt-dlp: $(yt-dlp --version)"
+          echo "✅ Node.js: $(node --version)"
 
-      - name: تشغيل مزود PO Token (Docker)
+      - name: إعداد خادم PO Token (بدون Docker)
         run: |
-          echo "🚀 تشغيل حاوية PO Token Provider..."
-          sudo docker run --name bgutil-provider -d --init -p 127.0.0.1:4416:4416 brainicism/bgutil-ytdlp-pot-provider
+          set -e
+          echo "📦 استنساخ مستودع PO Token..."
+          git clone --single-branch --branch 2.0.0 https://github.com/Brainicism/bgutil-ytdlp-pot-provider.git /tmp/pot-provider
+          cd /tmp/pot-provider/server/
+          
+          echo "📦 تثبيت التبعيات وبناء الخادم..."
+          npm ci
+          npx tsc
+          
+          echo "🚀 تشغيل الخادم في الخلفية..."
+          nohup node build/main.js --port 4416 > /tmp/pot-server.log 2>&1 &
+          
+          # الانتظار حتى يبدأ الخادم
           sleep 5
-          echo "✅ مزود PO Token يعمل على المنفذ 4416."
+          echo "✅ خادم PO Token يعمل على المنفذ 4416."
+          cat /tmp/pot-server.log | head -n 5
 
-      - name: تثبيت إضافة yt-dlp للـ PO Token
+      - name: تثبيت إضافة yt-dlp
         run: |
           echo "📦 تثبيت إضافة bgutil-ytdlp-pot-provider..."
           python3 -m pip install --user --break-system-packages --quiet bgutil-ytdlp-pot-provider
@@ -70,7 +83,7 @@ jobs:
           while true; do
             echo "─── [$(date -u +%H:%M:%S)] محاولة الاتصال... ───"
             
-            # استخدام yt-dlp مع مزود PO Token، الكوكيز، وعميل mweb
+            # استخدام yt-dlp مع خادم PO Token المحلي، الكوكيز، وعميل mweb
             STREAM_URL=$(yt-dlp -g -f best \
               --cookies /tmp/cookies.txt \
               --extractor-args "youtube:player_client=mweb;pot_provider=http://127.0.0.1:4416" \

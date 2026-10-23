@@ -1,4 +1,4 @@
-name: YouTube to Restream 24-7 Relay
+name: YouTube to Restream 24-7 Relay (No-Cookie)
 
 on:
   workflow_dispatch:
@@ -15,7 +15,7 @@ jobs:
     timeout-minutes: 355
 
     # ═══════════════════════════════════════════════════
-    # 🔴 ضع مفتاح ريستريم ورابط اليوتيوب هنا 🔴
+    # الإعدادات
     # ═══════════════════════════════════════════════════
     env:
       RESTREAM_KEY: "re_12552561_event81737fba9ada4713ab13ad7e04a36880"
@@ -23,7 +23,7 @@ jobs:
     # ═══════════════════════════════════════════════════
 
     steps:
-      - name: تثبيت ffmpeg و yt-dlp
+      - name: تثبيت ffmpeg و yt-dlp و streamlink
         run: |
           set -e
           echo "═══ التثبيت ═══"
@@ -36,36 +36,48 @@ jobs:
           sudo curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp
           sudo chmod a+rx /usr/local/bin/yt-dlp
           
+          # تثبيت streamlink كأداة احتياطية
+          pip3 install --user --break-system-packages --quiet --upgrade streamlink
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+          
           echo "✅ ffmpeg: $(ffmpeg -version | head -n 1)"
           echo "✅ yt-dlp: $(yt-dlp --version)"
 
       - name: تشغيل البث (مع إعادة الاتصال التلقائي)
         run: |
           set -e
-          if [ -z "$RESTREAM_KEY" ] || [ "$RESTREAM_KEY" == "ضع_مفتاح_ريستريم_هنا_مثال_re_123456789" ]; then
-            echo "❌ خطأ: يرجى وضع مفتاح RESTREAM_KEY الصحيح في أعلى ملف main.yml"
-            exit 1
-          fi
-
           echo "🚀 بدء تشغيل الجسر: $YOUTUBE_URL -> Restream"
 
-          # حلقة لا نهائية: إذا انقطع البث لأي سبب، تعيد المحاولة تلقائياً بعد 5 ثوانٍ
+          # حلقة لا نهائية لضمان استمرار البث
           while true; do
             echo "─── [$(date -u +%H:%M:%S)] محاولة الاتصال بالمصدر... ───"
+            
+            STREAM_URL=""
 
-            # 1. استخراج رابط البث المباشر (m3u8) باستخدام yt-dlp
-            # نضع || true لتجنب فشل السكربت إذا لم يجد رابطاً
-            STREAM_URL=$(yt-dlp -g -f best "$YOUTUBE_URL" 2>/dev/null | head -n 1 || true)
+            # المحاولة الأولى: yt-dlp مع التظاهر بأنه جهاز iOS أو Android أو تلفاز
+            echo "🔄 محاولة 1: yt-dlp (Mobile/TV Client)..."
+            STREAM_URL=$(yt-dlp -g -f best \
+              --extractor-args "youtube:player_client=ios,android,web_embedded" \
+              --no-warnings \
+              "$YOUTUBE_URL" 2>/dev/null | head -n 1 || true)
 
+            # المحاولة الثانية: streamlink (إذا فشلت الأولى)
             if [ -z "$STREAM_URL" ]; then
-              echo "⚠️ لم يتم العثور على رابط بث (قد يكون البث متوقفاً). إعادة المحاولة بعد 10 ثوانٍ..."
+              echo "🔄 محاولة 2: streamlink..."
+              STREAM_URL=$(streamlink --stream-url "$YOUTUBE_URL" best 2>/dev/null || true)
+            fi
+
+            # التحقق من النتيجة
+            if [ -z "$STREAM_URL" ]; then
+              echo "⚠️ لم يتم العثور على رابط بث. البث قد يكون متوقفاً حالياً، أو يوتيوب يحظر السيرفر."
+              echo "⏳ إعادة المحاولة بعد 10 ثوانٍ..."
               sleep 10
               continue
             fi
 
-            echo "✅ تم استخراج الرابط، جاري التمرير إلى Restream..."
+            echo "✅ تم استخراج الرابط بنجاح، جاري التمرير إلى Restream..."
 
-            # 2. تمرير البث باستخدام ffmpeg
+            # تمرير البث باستخدام ffmpeg
             ffmpeg -hide_banner -loglevel warning -nostdin \
               -reconnect 1 -reconnect_at_eof 1 -reconnect_streamed 1 -reconnect_delay_max 5 \
               -rw_timeout 10000000 \
@@ -75,7 +87,7 @@ jobs:
               -flvflags no_duration_filesize \
               -f flv "rtmp://live.restream.io/live/$RESTREAM_KEY" || true
 
-            echo "⚠️ انقطع البث أو فشل الاتصال. إعادة المحاولة خلال 5 ثوانٍ..."
+            echo "⚠️ انقطع البث. إعادة المحاولة خلال 5 ثوانٍ..."
             sleep 5
           done
 
@@ -84,7 +96,6 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # إذا فشل الرن أو انتهى وقته، يطلق رناً جديداً بعد 5 ساعات و30 دقيقة
           setsid nohup bash -c "
             sleep 19800
             gh workflow run main.yml --ref '${{ github.ref_name }}'
